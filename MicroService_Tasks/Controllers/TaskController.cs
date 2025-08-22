@@ -1,11 +1,13 @@
 ﻿using MicroService_Tasks.Data;
 using MicroService_Tasks.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 
 namespace MicroService_Tasks.Controllers
 {
+    [Authorize]
     public class TaskController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -18,7 +20,9 @@ namespace MicroService_Tasks.Controllers
         [HttpGet("GET")]
         public async Task<ActionResult> get()
         {
-            var res = _context.Lista.ToList();
+            var res = await _context.Lista.ToListAsync();
+            if (res == null) return NotFound("erro ao buscar dados");
+
             return Ok(res);
         }
 
